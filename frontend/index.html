@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Halal Supply Chain Tracker</title>
+    <script src="https://cdn.ethers.io/lib/ethers-5.7.umd.min.js" type="application/javascript"></script>
+    <style>
+        body { font-family: sans-serif; text-align: center; padding: 50px; }
+        input { padding: 10px; width: 300px; }
+        button { padding: 10px 20px; cursor: pointer; background: #28a745; color: white; border: none; }
+        #result { margin-top: 20px; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <h1>Halal Product Tracker</h1>
+    <p>Connected Wallet: <span id="walletAddress">Not Connected</span></p>
+    
+    <div>
+        <input type="text" id="productId" placeholder="Enter Product ID">
+        <button onclick="checkProduct()">Track Product</button>
+    </div>
+
+    <div id="result"></div>
+
+    <script src="app.js"></script>
+</body>
+</html>
