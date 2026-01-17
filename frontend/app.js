@@ -1,8 +1,674 @@
 let contract;
 let signer;
-const contractAddress = "0x31245073A611B9d53637ecbEDEE69aF49E7446bE";
-const abi = [{"inputs":[{"internalType":"address","name":"_jakim","type":"address"}],"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"string","name":"batchId","type":"string"},{"indexed":false,"internalType":"string","name":"productName","type":"string"},{"indexed":false,"internalType":"address","name":"farmer","type":"address"},{"indexed":false,"internalType":"uint256","name":"time","type":"uint256"}],"name":"BatchCreated","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"string","name":"batchId","type":"string"},{"indexed":false,"internalType":"address","name":"authority","type":"address"},{"indexed":false,"internalType":"uint256","name":"time","type":"uint256"}],"name":"HalalCertificateIssued","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"string","name":"batchId","type":"string"},{"indexed":false,"internalType":"address","name":"from","type":"address"},{"indexed":false,"internalType":"address","name":"to","type":"address"},{"indexed":false,"internalType":"uint256","name":"time","type":"uint256"}],"name":"OwnershipTransferred","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"string","name":"batchId","type":"string"},{"indexed":false,"internalType":"address","name":"slaughterhouse","type":"address"},{"indexed":false,"internalType":"uint256","name":"time","type":"uint256"}],"name":"SlaughterRecorded","type":"event"},{"inputs":[],"name":"admin","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"string","name":"","type":"string"}],"name":"batches","outputs":[{"internalType":"string","name":"batchId","type":"string"},{"internalType":"string","name":"productName","type":"string"},{"internalType":"uint256","name":"chickenCount","type":"uint256"},{"internalType":"address","name":"farmer","type":"address"},{"internalType":"address","name":"currentOwner","type":"address"},{"internalType":"string","name":"status","type":"string"},{"internalType":"bool","name":"exists","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"string","name":"","type":"string"}],"name":"certificates","outputs":[{"internalType":"bool","name":"issued","type":"bool"},{"internalType":"uint256","name":"issuedAt","type":"uint256"},{"internalType":"uint256","name":"expiryDate","type":"uint256"},{"internalType":"address","name":"authority","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"string","name":"_batchId","type":"string"},{"internalType":"string","name":"_productName","type":"string"},{"internalType":"uint256","name":"_chickenCount","type":"uint256"}],"name":"createBatch","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"","type":"address"}],"name":"distributors","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"","type":"address"}],"name":"farmers","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"string","name":"_batchId","type":"string"}],"name":"getBatchDetails","outputs":[{"components":[{"internalType":"string","name":"batchId","type":"string"},{"internalType":"string","name":"productName","type":"string"},{"internalType":"uint256","name":"chickenCount","type":"uint256"},{"internalType":"address","name":"farmer","type":"address"},{"internalType":"address","name":"currentOwner","type":"address"},{"internalType":"string","name":"status","type":"string"},{"internalType":"bool","name":"exists","type":"bool"}],"internalType":"struct HalalSupplyChain.Batch","name":"","type":"tuple"},{"components":[{"internalType":"uint256","name":"date","type":"uint256"},{"internalType":"string","name":"method","type":"string"},{"internalType":"bool","name":"shariahCompliant","type":"bool"},{"internalType":"address","name":"slaughterhouse","type":"address"},{"internalType":"bool","name":"recorded","type":"bool"}],"internalType":"struct HalalSupplyChain.SlaughterInfo","name":"","type":"tuple"},{"components":[{"internalType":"bool","name":"issued","type":"bool"},{"internalType":"uint256","name":"issuedAt","type":"uint256"},{"internalType":"uint256","name":"expiryDate","type":"uint256"},{"internalType":"address","name":"authority","type":"address"}],"internalType":"struct HalalSupplyChain.HalalCertificate","name":"","type":"tuple"},{"components":[{"internalType":"address","name":"from","type":"address"},{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"transferredAt","type":"uint256"}],"internalType":"struct HalalSupplyChain.Ownership[]","name":"","type":"tuple[]"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"string","name":"_batchId","type":"string"}],"name":"isCertificateValid","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"string","name":"_batchId","type":"string"}],"name":"issueHalalCertificate","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"jakim","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"string","name":"","type":"string"},{"internalType":"uint256","name":"","type":"uint256"}],"name":"ownershipHistory","outputs":[{"internalType":"address","name":"from","type":"address"},{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"transferredAt","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"string","name":"_batchId","type":"string"},{"internalType":"string","name":"_method","type":"string"},{"internalType":"bool","name":"_shariahCompliant","type":"bool"}],"name":"recordSlaughter","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"_distributor","type":"address"}],"name":"registerDistributor","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"_farmer","type":"address"}],"name":"registerFarmer","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"_retailer","type":"address"}],"name":"registerRetailer","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"_slaughterhouse","type":"address"}],"name":"registerSlaughterhouse","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"","type":"address"}],"name":"retailers","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"string","name":"","type":"string"}],"name":"slaughterInfos","outputs":[{"internalType":"uint256","name":"date","type":"uint256"},{"internalType":"string","name":"method","type":"string"},{"internalType":"bool","name":"shariahCompliant","type":"bool"},{"internalType":"address","name":"slaughterhouse","type":"address"},{"internalType":"bool","name":"recorded","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"","type":"address"}],"name":"slaughterhouses","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"string","name":"_batchId","type":"string"},{"internalType":"address","name":"_to","type":"address"}],"name":"transferOwnership","outputs":[],"stateMutability":"nonpayable","type":"function"}];
-
+const contractAddress = "0x085a1a8CB34C09CDfc769c606cef0BfAAAFb2EF0";
+const abi = [
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "_jakim",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "nonpayable",
+      "type": "constructor"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "string",
+          "name": "batchId",
+          "type": "string"
+        },
+        {
+          "indexed": false,
+          "internalType": "string",
+          "name": "productName",
+          "type": "string"
+        },
+        {
+          "indexed": false,
+          "internalType": "address",
+          "name": "farmer",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "time",
+          "type": "uint256"
+        }
+      ],
+      "name": "BatchCreated",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "string",
+          "name": "batchId",
+          "type": "string"
+        },
+        {
+          "indexed": false,
+          "internalType": "address",
+          "name": "authority",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "time",
+          "type": "uint256"
+        }
+      ],
+      "name": "HalalCertificateIssued",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "string",
+          "name": "batchId",
+          "type": "string"
+        },
+        {
+          "indexed": false,
+          "internalType": "address",
+          "name": "from",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "address",
+          "name": "to",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "time",
+          "type": "uint256"
+        }
+      ],
+      "name": "OwnershipTransferred",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "string",
+          "name": "batchId",
+          "type": "string"
+        },
+        {
+          "indexed": false,
+          "internalType": "address",
+          "name": "slaughterhouse",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "time",
+          "type": "uint256"
+        }
+      ],
+      "name": "SlaughterRecorded",
+      "type": "event"
+    },
+    {
+      "inputs": [],
+      "name": "admin",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "string",
+          "name": "",
+          "type": "string"
+        }
+      ],
+      "name": "batches",
+      "outputs": [
+        {
+          "internalType": "string",
+          "name": "batchId",
+          "type": "string"
+        },
+        {
+          "internalType": "string",
+          "name": "productName",
+          "type": "string"
+        },
+        {
+          "internalType": "uint256",
+          "name": "chickenCount",
+          "type": "uint256"
+        },
+        {
+          "internalType": "address",
+          "name": "farmer",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "currentOwner",
+          "type": "address"
+        },
+        {
+          "internalType": "string",
+          "name": "status",
+          "type": "string"
+        },
+        {
+          "internalType": "bool",
+          "name": "exists",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "string",
+          "name": "",
+          "type": "string"
+        }
+      ],
+      "name": "certificates",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "issued",
+          "type": "bool"
+        },
+        {
+          "internalType": "uint256",
+          "name": "issuedAt",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "expiryDate",
+          "type": "uint256"
+        },
+        {
+          "internalType": "address",
+          "name": "authority",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "string",
+          "name": "_batchId",
+          "type": "string"
+        },
+        {
+          "internalType": "string",
+          "name": "_productName",
+          "type": "string"
+        },
+        {
+          "internalType": "uint256",
+          "name": "_chickenCount",
+          "type": "uint256"
+        }
+      ],
+      "name": "createBatch",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "name": "distributors",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "name": "farmers",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "string",
+          "name": "_batchId",
+          "type": "string"
+        }
+      ],
+      "name": "getBatchDetails",
+      "outputs": [
+        {
+          "components": [
+            {
+              "internalType": "string",
+              "name": "batchId",
+              "type": "string"
+            },
+            {
+              "internalType": "string",
+              "name": "productName",
+              "type": "string"
+            },
+            {
+              "internalType": "uint256",
+              "name": "chickenCount",
+              "type": "uint256"
+            },
+            {
+              "internalType": "address",
+              "name": "farmer",
+              "type": "address"
+            },
+            {
+              "internalType": "address",
+              "name": "currentOwner",
+              "type": "address"
+            },
+            {
+              "internalType": "string",
+              "name": "status",
+              "type": "string"
+            },
+            {
+              "internalType": "bool",
+              "name": "exists",
+              "type": "bool"
+            }
+          ],
+          "internalType": "struct HalalSupplyChain.Batch",
+          "name": "",
+          "type": "tuple"
+        },
+        {
+          "components": [
+            {
+              "internalType": "uint256",
+              "name": "date",
+              "type": "uint256"
+            },
+            {
+              "internalType": "string",
+              "name": "method",
+              "type": "string"
+            },
+            {
+              "internalType": "bool",
+              "name": "shariahCompliant",
+              "type": "bool"
+            },
+            {
+              "internalType": "address",
+              "name": "slaughterhouse",
+              "type": "address"
+            },
+            {
+              "internalType": "bool",
+              "name": "recorded",
+              "type": "bool"
+            }
+          ],
+          "internalType": "struct HalalSupplyChain.SlaughterInfo",
+          "name": "",
+          "type": "tuple"
+        },
+        {
+          "components": [
+            {
+              "internalType": "bool",
+              "name": "issued",
+              "type": "bool"
+            },
+            {
+              "internalType": "uint256",
+              "name": "issuedAt",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "expiryDate",
+              "type": "uint256"
+            },
+            {
+              "internalType": "address",
+              "name": "authority",
+              "type": "address"
+            }
+          ],
+          "internalType": "struct HalalSupplyChain.HalalCertificate",
+          "name": "",
+          "type": "tuple"
+        },
+        {
+          "components": [
+            {
+              "internalType": "address",
+              "name": "from",
+              "type": "address"
+            },
+            {
+              "internalType": "address",
+              "name": "to",
+              "type": "address"
+            },
+            {
+              "internalType": "uint256",
+              "name": "transferredAt",
+              "type": "uint256"
+            }
+          ],
+          "internalType": "struct HalalSupplyChain.Ownership[]",
+          "name": "",
+          "type": "tuple[]"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "string",
+          "name": "_batchId",
+          "type": "string"
+        }
+      ],
+      "name": "isCertificateValid",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "string",
+          "name": "_batchId",
+          "type": "string"
+        }
+      ],
+      "name": "issueHalalCertificate",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "jakim",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "string",
+          "name": "",
+          "type": "string"
+        },
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "name": "ownershipHistory",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "from",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "to",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "transferredAt",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "string",
+          "name": "_batchId",
+          "type": "string"
+        },
+        {
+          "internalType": "string",
+          "name": "_method",
+          "type": "string"
+        },
+        {
+          "internalType": "bool",
+          "name": "_shariahCompliant",
+          "type": "bool"
+        }
+      ],
+      "name": "recordSlaughter",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "_distributor",
+          "type": "address"
+        }
+      ],
+      "name": "registerDistributor",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "_farmer",
+          "type": "address"
+        }
+      ],
+      "name": "registerFarmer",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "_retailer",
+          "type": "address"
+        }
+      ],
+      "name": "registerRetailer",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "_slaughterhouse",
+          "type": "address"
+        }
+      ],
+      "name": "registerSlaughterhouse",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "name": "retailers",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "string",
+          "name": "",
+          "type": "string"
+        }
+      ],
+      "name": "slaughterInfos",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "date",
+          "type": "uint256"
+        },
+        {
+          "internalType": "string",
+          "name": "method",
+          "type": "string"
+        },
+        {
+          "internalType": "bool",
+          "name": "shariahCompliant",
+          "type": "bool"
+        },
+        {
+          "internalType": "address",
+          "name": "slaughterhouse",
+          "type": "address"
+        },
+        {
+          "internalType": "bool",
+          "name": "recorded",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "name": "slaughterhouses",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "string",
+          "name": "_batchId",
+          "type": "string"
+        },
+        {
+          "internalType": "address",
+          "name": "_to",
+          "type": "address"
+        }
+      ],
+      "name": "transferOwnership",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    }
+  ];
 async function init() {
     const walletSpan = document.getElementById("walletAddress");
 
@@ -239,6 +905,28 @@ async function verifyBatchForRetail() {
     } catch (err) {
         console.error(err);
         resultDiv.innerHTML = '<div class="alert-error">Batch not found or error occurred</div>';
+    }
+}
+
+// Farmer: Transfer Ownership to Distributor
+async function uiFarmerTransfer() {
+    const id = document.getElementById("fbTransferId").value.trim();
+    const toAddr = document.getElementById("fToAddress").value.trim();
+
+    if (!id || !toAddr) return alert("Fill all fields");
+
+    try {
+        const tx = await contract.transferOwnership(id, toAddr);
+        alert("Transaction sent! Waiting for confirmation...");
+        await tx.wait();
+        alert("Ownership transferred to Distributor!");
+        
+        // Clear form
+        document.getElementById("fbTransferId").value = "";
+        document.getElementById("fToAddress").value = "";
+    } catch (err) {
+        console.error(err);
+        alert("Error: " + (err.reason || err.message));
     }
 }
 
